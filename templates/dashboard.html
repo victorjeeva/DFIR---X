@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>DFIR-X | Dashboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #111827;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            background: #374151;
+        }
+
+        .section {
+            background: white;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action {
+            background: #f3f4f6;
+            padding: 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #111827;
+            font-weight: bold;
+            min-width: 180px;
+        }
+
+        .action:hover {
+            background: #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>DFIR-X</h1>
+
+    <p>
+        Digital Forensics & Incident Response Investigation System
+    </p>
+
+</header>
+
+<div class="container">
+
+    <!-- Dashboard Statistics -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ cases|length }}</h2>
+            <p>Investigation Cases</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ evidence_count }}</h2>
+            <p>Evidence Items</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ verified_count }}</h2>
+            <p>Verified Evidence</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ mismatch_count }}</h2>
+            <p>Integrity Mismatches</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ risk_counts["CRITICAL"] }}</h2>
+            <p>Critical Risk</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ risk_counts["HIGH"] }}</h2>
+            <p>High Risk</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ risk_counts["MEDIUM"] }}</h2>
+            <p>Medium Risk</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ risk_counts["LOW"] }}</h2>
+            <p>Low Risk</p>
+        </div>
+
+    </div>
+
+
+    <!-- Quick Actions -->
+
+    <div>
+
+        <a href="/create-case" class="button">
+            + Create Investigation Case
+        </a>
+
+        <a href="/add-evidence" class="button">
+            + Add Evidence
+        </a>
+
+        <a href="/evidence" class="button">
+            Evidence Management
+        </a>
+
+    </div>
+
+
+    <!-- Quick Investigation Actions -->
+
+    <!-- Quick Investigation Actions -->
+
+<div class="section">
+
+    <h2>Quick Investigation Actions</h2>
+
+    <div class="actions">
+
+        <a href="/evidence" class="action">
+            Evidence Management
+        </a>
+
+        {% if latest_evidence_id %}
+
+        <a href="{{ url_for('ioc_analysis', evidence_id=latest_evidence_id) }}" class="action">
+            IOC Analysis
+        </a>
+
+        <a href="{{ url_for('timeline_analysis', evidence_id=latest_evidence_id) }}" class="action">
+            Timeline Analysis
+        </a>
+
+        <a href="{{ url_for('log_analysis', evidence_id=latest_evidence_id) }}" class="action">
+            Network / Log Analysis
+        </a>
+
+        <a href="{{ url_for('risk_analysis', evidence_id=latest_evidence_id) }}" class="action">
+            Risk Analysis
+        </a>
+
+        <a href="{{ url_for('investigation_report', evidence_id=latest_evidence_id) }}" class="action">
+            Investigation Report
+        </a>
+
+        {% else %}
+
+        <p>No evidence available for analysis.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- Investigation Cases -->
+
+
+    <!-- Investigation Cases -->
+
+    <div class="section">
+
+        <h2>Investigation Cases</h2>
+
+        {% if cases %}
+
+        <table>
+
+            <tr>
+                <th>Case ID</th>
+                <th>Case Name</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+
+            {% for case in cases %}
+
+            <tr>
+
+                <td>{{ case["case_id"] }}</td>
+
+                <td>{{ case["case_name"] }}</td>
+
+                <td>{{ case["severity"] }}</td>
+
+                <td>{{ case["status"] }}</td>
+
+                <td>{{ case["created_at"] }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% else %}
+
+        <p>No investigation cases created yet.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Recent Evidence -->
+
+    <div class="section">
+
+        <h2>Recent Evidence</h2>
+
+        {% if recent_evidence %}
+
+        <table>
+
+            <tr>
+
+                <th>Evidence ID</th>
+                <th>Evidence Name</th>
+                <th>Integrity</th>
+                <th>Report</th>
+
+            </tr>
+
+            {% for item in recent_evidence %}
+
+            <tr>
+
+                <td>{{ item["evidence_id"] }}</td>
+
+                <td>{{ item["evidence_name"] }}</td>
+
+                <td>{{ item["integrity_status"] }}</td>
+
+                <td>
+
+                    <a href="{{ url_for('investigation_report', evidence_id=item['id']) }}">
+                        View Report
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% else %}
+
+        <p>No evidence added yet.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- DFIR Workflow -->
+
+    <div class="section">
+
+        <h2>DFIR Investigation Workflow</h2>
+
+        <ol>
+
+            <li>Evidence Collection</li>
+
+            <li>Evidence Integrity Verification</li>
+
+            <li>Forensic Analysis</li>
+
+            <li>Timeline Reconstruction</li>
+
+            <li>IOC Extraction</li>
+
+            <li>Network / Log Analysis</li>
+
+            <li>Automated Risk Assessment</li>
+
+            <li>Investigation Report Generation</li>
+
+        </ol>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
