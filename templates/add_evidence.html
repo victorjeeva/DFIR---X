@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Evidence - DFIR-X</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .info {
+            background: #eef3ff;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Add Digital Evidence</h1>
+
+    <div class="info">
+        SHA-256 will be calculated automatically when the evidence is registered.
+    </div>
+
+    <form method="POST">
+
+        <label>Evidence ID</label>
+        <input
+            type="text"
+            name="evidence_id"
+            placeholder="EVID-001"
+            required
+        >
+
+        <label>Case ID</label>
+        <input
+            type="text"
+            name="case_id"
+            placeholder="CASE-001"
+            required
+        >
+
+        <label>Evidence Name</label>
+        <input
+            type="text"
+            name="evidence_name"
+            placeholder="disk_image.e01"
+            required
+        >
+
+        <label>Evidence Type</label>
+
+        <select name="evidence_type">
+
+            <option>Disk Image</option>
+            <option>Memory Dump</option>
+            <option>PCAP</option>
+            <option>Log File</option>
+            <option>File</option>
+            <option>Other</option>
+
+        </select>
+
+        <label>Evidence File Path</label>
+
+        <input
+            type="text"
+            name="file_path"
+            placeholder="/home/kali/DFIR-X/evidence/test_evidence.txt"
+            required
+        >
+
+        <label>Source</label>
+
+        <input
+            type="text"
+            name="source"
+            placeholder="Collected from investigation system"
+        >
+
+        <label>Description</label>
+
+        <textarea
+            name="description"
+            placeholder="Describe the evidence..."
+        ></textarea>
+
+        <button type="submit">
+            Register Evidence & Calculate SHA-256
+        </button>
+
+    </form>
+
+    <a class="back" href="/">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forensic File Triage - DFIR-X</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .row {
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .key {
+            font-weight: bold;
+            display: inline-block;
+            width: 220px;
+            vertical-align: top;
+        }
+
+        .value {
+            overflow-wrap: anywhere;
+        }
+
+        .hash {
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .good {
+            color: green;
+            font-weight: bold;
+        }
+
+        .bad {
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        .note {
+            background: #eef3ff;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Forensic File Triage</h1>
+    <p>
+        Evidence ID: <strong>{{ evidence["evidence_id"] }}</strong>
+        &nbsp; | &nbsp;
+        Case ID: <strong>{{ evidence["case_id"] }}</strong>
+    </p>
+
+    <div class="note">
+        This is preliminary file triage. File-type hints are not proof
+        that a file is safe, malicious, or genuine. The evidence file
+        is read, not modified.
+    </div>
+
+    {% if error %}
+        <p class="bad">{{ error }}</p>
+    {% endif %}
+
+    {% if result %}
+        <h2>Analysis Summary</h2>
+
+        <div class="row">
+            <span class="key">Evidence name</span>
+            <span class="value">{{ result["name"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">Saved file path</span>
+            <span class="value">{{ result["path"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">File size</span>
+            <span class="value">
+                {{ result["size_bytes"] }} bytes
+                ({{ result["size_mb"] }} MiB)
+            </span>
+        </div>
+
+        <div class="row">
+            <span class="key">Last modified</span>
+            <span class="value">{{ result["modified"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">MIME type hint</span>
+            <span class="value">{{ result["mime_type"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">Header signature hint</span>
+            <span class="value">{{ result["signature_hint"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">System file identification</span>
+            <span class="value">{{ result["file_utility_result"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">Current SHA-256</span>
+            <span class="value hash">{{ result["sha256"] }}</span>
+        </div>
+
+        <div class="row">
+            <span class="key">Matches registered hash</span>
+            <span class="value">
+                {% if result["hash_matches"] %}
+                    <span class="good">Yes — hash matches</span>
+                {% else %}
+                    <span class="bad">No — hash differs</span>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+    <a href="/evidence">← Evidence Management</a>
+    <a href="/">Dashboard</a>
+</div>
+</body>
+</html>

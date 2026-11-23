@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Evidence Management - DFIR-X</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .verified {
+            color: green;
+            font-weight: bold;
+        }
+
+        .violation {
+            color: red;
+            font-weight: bold;
+        }
+
+        .missing {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .hash {
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Evidence Management</h1>
+
+    <p>
+        Registered forensic evidence and integrity verification.
+    </p>
+
+    <table>
+
+        <tr>
+
+            <th>ID</th>
+            <th>Evidence</th>
+            <th>Type</th>
+            <th>Case</th>
+            <th>SHA-256</th>
+            <th>Status</th>
+            <th>Action</th>
+
+        </tr>
+
+        {% for item in evidence %}
+
+        <tr>
+
+            <td>{{ item["evidence_id"] }}</td>
+
+            <td>{{ item["evidence_name"] }}</td>
+
+            <td>{{ item["evidence_type"] }}</td>
+
+            <td>{{ item["case_id"] }}</td>
+
+            <td class="hash">
+                {{ item["current_hash"] }}
+            </td>
+
+            <td>
+
+                {% if item["integrity_status"] == "Verified" %}
+
+                    <span class="verified">
+                        ✓ Verified
+                    </span>
+
+                {% elif item["integrity_status"] == "Integrity Violation" %}
+
+                    <span class="violation">
+                        ⚠ Integrity Violation
+                    </span>
+
+                {% else %}
+
+                    <span class="missing">
+                        {{ item["integrity_status"] }}
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a href="/verify-evidence/{{ item['id'] }}">
+                    Verify Integrity
+                </a>
+<br>
+<a href="/analyze/{{ item['id'] }}">
+    Analyze File
+</a>
+<a href="/ioc/{{ item['id'] }}">
+    IOC Analysis
+</a>
+<a href="{{ url_for('timeline_analysis', evidence_id=item['id']) }}">
+    Timeline
+</a>
+
+<a href="{{ url_for('log_analysis', evidence_id=item['id']) }}">
+    Log Analysis
+</a>
+<a href="{{ url_for('risk_analysis', evidence_id=item['id']) }}">
+    Risk Analysis
+</a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+    <a href="/add-evidence">
+        + Add New Evidence
+    </a>
+
+    &nbsp;&nbsp;
+
+    <a href="/">
+        ← Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

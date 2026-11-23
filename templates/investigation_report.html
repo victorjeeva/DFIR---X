@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Investigation Report - DFIR-X</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f1f3f5;
+        }
+
+        .risk {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .reason {
+            padding: 10px;
+            margin: 6px 0;
+            background: #f1f3f5;
+            border-left: 4px solid #333;
+        }
+
+        .ioc {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            margin-right: 10px;
+            text-decoration: none;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .hash {
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>DFIR-X Investigation Report</h1>
+
+    <div class="subtitle">
+        Digital Forensics & Incident Response Investigation
+    </div>
+
+
+    <!-- CASE INFORMATION -->
+
+    <div class="card">
+
+        <h2>1. Case Information</h2>
+
+        <table>
+
+            <tr>
+                <th>Case ID</th>
+                <td>{{ report["case_information"]["case_id"] }}</td>
+            </tr>
+
+            <tr>
+                <th>Evidence ID</th>
+                <td>{{ report["case_information"]["evidence_id"] }}</td>
+            </tr>
+
+            <tr>
+                <th>Evidence Name</th>
+                <td>{{ report["case_information"]["evidence_name"] }}</td>
+            </tr>
+
+            <tr>
+                <th>Evidence Type</th>
+                <td>{{ report["case_information"]["evidence_type"] }}</td>
+            </tr>
+
+            <tr>
+                <th>Source</th>
+                <td>{{ report["case_information"]["source"] }}</td>
+            </tr>
+
+            <tr>
+                <th>Generated At</th>
+                <td>{{ report["generated_at"] }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- EVIDENCE INTEGRITY -->
+
+    <div class="card">
+
+        <h2>2. Evidence Integrity</h2>
+
+        <table>
+
+            <tr>
+                <th>Original SHA-256</th>
+
+                <td class="hash">
+                    {{ report["evidence_integrity"]["original_hash"] }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Current SHA-256</th>
+
+                <td class="hash">
+                    {{ report["evidence_integrity"]["current_hash"] }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Integrity Status</th>
+
+                <td>
+                    {{ report["evidence_integrity"]["integrity_status"] }}
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- FILE TRIAGE -->
+
+    <div class="card">
+
+        <h2>3. File Triage</h2>
+
+        {% if report["file_triage"] %}
+
+            <table>
+
+                {% for key, value in report["file_triage"].items() %}
+
+                <tr>
+
+                    <th>{{ key }}</th>
+
+                    <td>{{ value }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        {% else %}
+
+            <p>No file triage information available.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- IOC ANALYSIS -->
+
+    <div class="card">
+
+        <h2>4. IOC Analysis</h2>
+
+        {% if report["ioc_analysis"] %}
+
+            {% for key, value in report["ioc_analysis"].items() %}
+
+                <h3>{{ key }}</h3>
+
+                {% if value is iterable and value is not string %}
+
+                    {% for item in value %}
+
+                        <div class="ioc">
+                            {{ item }}
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="ioc">
+                        {{ value }}
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No IOC information available.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- TIMELINE -->
+
+    <div class="card">
+
+        <h2>5. Timeline Analysis</h2>
+
+        {% if report["timeline_analysis"] %}
+
+            <table>
+
+                {% for key, value in report["timeline_analysis"].items() %}
+
+                <tr>
+
+                    <th>{{ key }}</th>
+
+                    <td>{{ value }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        {% else %}
+
+            <p>No timeline information available.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- LOG ANALYSIS -->
+
+    <div class="card">
+
+        <h2>6. Network / Log Analysis</h2>
+
+        <table>
+
+            <tr>
+                <th>Total Log Lines</th>
+                <td>{{ report["log_analysis"].get("total_lines", 0) }}</td>
+            </tr>
+
+            <tr>
+                <th>Failed Logins</th>
+                <td>{{ report["log_analysis"].get("failed_logins", 0) }}</td>
+            </tr>
+
+            <tr>
+                <th>Successful Logins</th>
+                <td>{{ report["log_analysis"].get("successful_logins", 0) }}</td>
+            </tr>
+
+            <tr>
+                <th>Connection Events</th>
+                <td>{{ report["log_analysis"].get("connection_events", 0) }}</td>
+            </tr>
+
+            <tr>
+                <th>IP Addresses</th>
+                <td>{{ report["log_analysis"].get("ip_addresses", []) }}</td>
+            </tr>
+
+            <tr>
+                <th>Ports</th>
+                <td>{{ report["log_analysis"].get("ports", []) }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- RISK ANALYSIS -->
+
+    <div class="card">
+
+        <h2>7. Automated Risk Assessment</h2>
+
+        <div class="risk">
+            {{ report["risk_analysis"].get("risk_level", "UNKNOWN") }}
+        </div>
+
+        <p>
+            <strong>Risk Score:</strong>
+            {{ report["risk_analysis"].get("risk_score", 0) }}
+        </p>
+
+        <h3>Risk Factors</h3>
+
+        {% for reason in report["risk_analysis"].get("reasons", []) %}
+
+            <div class="reason">
+                {{ reason }}
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- INCIDENT SUMMARY -->
+
+    <div class="card">
+
+    <h2>8. Incident Summary</h2>
+
+    {% if report["incident_summary"] %}
+
+        <p>
+            {{ report["incident_summary"]["summary"] }}
+        </p>
+
+        <h3>Investigation Findings</h3>
+
+        {% for finding in report["incident_summary"]["findings"] %}
+
+            <div class="reason">
+                {{ finding }}
+            </div>
+
+        {% endfor %}
+
+        <h3>Evidence Integrity</h3>
+
+        <p>
+            <strong>Status:</strong>
+            {{ report["incident_summary"]["integrity_status"] }}
+        </p>
+
+    {% else %}
+
+        <p>No incident summary available.</p>
+
+    {% endif %}
+
+</div>
+
+    <!-- NAVIGATION -->
+
+    <div class="card">
+
+        <a class="button"
+           href="{{ url_for('evidence_list') }}">
+            Evidence Management
+        </a>
+
+        <a class="button"
+           href="{{ url_for('risk_analysis', evidence_id=evidence['id']) }}">
+            Risk Analysis
+        </a>
+
+        <a class="button"
+           href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

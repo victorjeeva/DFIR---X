@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Network / Log Analysis - DFIR-X</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .box {
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f3f5;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a class="back" href="{{ url_for('evidence_list') }}">
+        ← Back to Evidence
+    </a>
+
+    <h1>Network / Log Analysis</h1>
+
+    <div class="subtitle">
+        DFIR-X Digital Forensics & Incident Response
+    </div>
+
+    <div class="card">
+
+        <h2>Evidence Information</h2>
+
+        <p>
+            <strong>Evidence ID:</strong>
+            {{ evidence["id"] }}
+        </p>
+
+        <p>
+            <strong>Evidence Name:</strong>
+            {{ evidence["evidence_name"] }}
+        </p>
+
+        <p>
+            <strong>File:</strong>
+            {{ evidence["file_path"] }}
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Event Statistics</h2>
+
+        <div class="grid">
+
+            <div class="box">
+                <div class="number">
+                    {{ result["total_lines"] }}
+                </div>
+                <div class="label">
+                    Total Events
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="number">
+                    {{ result["failed_logins"] }}
+                </div>
+                <div class="label">
+                    Failed Logins
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="number">
+                    {{ result["successful_logins"] }}
+                </div>
+                <div class="label">
+                    Successful Logins
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="number">
+                    {{ result["connection_events"] }}
+                </div>
+                <div class="label">
+                    Connections
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Source IP Addresses</h2>
+
+        <table>
+
+            <tr>
+                <th>IP Address</th>
+                <th>Occurrences</th>
+            </tr>
+
+            {% for ip, count in result["ip_counts"].items() %}
+
+            <tr>
+                <td>{{ ip }}</td>
+                <td>{{ count }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Users</h2>
+
+        {% if result["usernames"] %}
+
+            <ul>
+                {% for username in result["usernames"] %}
+                    <li>{{ username }}</li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+
+            <p>No usernames detected.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h2>Destination Ports</h2>
+
+        {% if result["ports"] %}
+
+            <ul>
+                {% for port in result["ports"] %}
+                    <li>{{ port }}</li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+
+            <p>No destination ports detected.</p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h2>Suspicious Events</h2>
+
+        {% if result["suspicious_events"] %}
+
+            {% for event in result["suspicious_events"] %}
+
+                <div class="alert">
+                    <strong>{{ event["type"] }}</strong>
+                    <br>
+                    {{ event["description"] }}
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No suspicious patterns detected.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

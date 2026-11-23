@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Risk Analysis - DFIR-X</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .risk {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .score {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        .reason {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f1f3f5;
+            border-left: 4px solid #333;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            margin-right: 10px;
+            text-decoration: none;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Automated Risk Analysis</h1>
+
+    <div class="subtitle">
+        DFIR-X Digital Forensics & Incident Response
+    </div>
+
+
+    <div class="card">
+
+        <h2>Evidence Information</h2>
+
+        <p>
+            <strong>Evidence ID:</strong>
+            {{ evidence["id"] }}
+        </p>
+
+        <p>
+            <strong>Evidence Name:</strong>
+            {{ evidence["evidence_name"] }}
+        </p>
+
+        <p>
+            <strong>File:</strong>
+            {{ evidence["file_path"] }}
+        </p>
+
+        <p>
+            <strong>Integrity:</strong>
+            {{ evidence["integrity_status"] }}
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Risk Assessment</h2>
+
+        <div class="risk">
+            {{ result["risk_level"] }}
+        </div>
+
+        <div class="score">
+            Risk Score:
+            {{ result["risk_score"] }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Detected Risk Factors</h2>
+
+        {% if result["reasons"] %}
+
+            {% for reason in result["reasons"] %}
+
+                <div class="reason">
+                    {{ reason }}
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No significant risk factors detected.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <a class="button"
+           href="{{ url_for('log_analysis', evidence_id=evidence['id']) }}">
+            Log Analysis
+        </a>
+
+        <a class="button"
+           href="{{ url_for('evidence_list') }}">
+            Evidence Management
+        </a>
+
+        <a class="button"
+           href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Incident Summary - DFIR-X</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .risk {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .score {
+            font-size: 18px;
+            margin-top: 5px;
+        }
+
+        .ioc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .ioc-box {
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .ioc-number {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .ioc-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        ul {
+            line-height: 1.8;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+        }
+
+        @media (max-width: 700px) {
+            .ioc-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a class="back" href="{{ url_for('evidence_list') }}">
+        ← Back to Evidence
+    </a>
+
+    <h1>Incident Summary</h1>
+    <div class="subtitle">
+        DFIR-X Digital Forensics & Incident Response
+    </div>
+
+    <div class="card">
+
+        <h2>Evidence Information</h2>
+
+        <p>
+            <strong>Evidence ID:</strong>
+            {{ evidence["id"] }}
+        </p>
+
+        <p>
+            <strong>File Name:</strong>
+            {{ evidence["filename"] if "filename" in evidence.keys() else "N/A" }}
+        </p>
+
+        <p>
+            <strong>File Path:</strong>
+            {{ evidence["file_path"] }}
+        </p>
+
+        <p>
+            <strong>Integrity Status:</strong>
+            {{ evidence["integrity_status"] }}
+        </p>
+
+        <p>
+            <strong>SHA-256:</strong>
+            {{ evidence["original_hash"] }}
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Risk Assessment</h2>
+
+        <div class="risk">
+            {{ summary["risk_level"] }}
+        </div>
+
+        <div class="score">
+            Risk Score: {{ summary["risk_score"] }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>IOC Summary</h2>
+
+        <div class="ioc-grid">
+
+            <div class="ioc-box">
+                <div class="ioc-number">
+                    {{ summary["ioc_counts"]["ips"] }}
+                </div>
+                <div class="ioc-label">
+                    IP Addresses
+                </div>
+            </div>
+
+            <div class="ioc-box">
+                <div class="ioc-number">
+                    {{ summary["ioc_counts"]["urls"] }}
+                </div>
+                <div class="ioc-label">
+                    URLs
+                </div>
+            </div>
+
+            <div class="ioc-box">
+                <div class="ioc-number">
+                    {{ summary["ioc_counts"]["emails"] }}
+                </div>
+                <div class="ioc-label">
+                    Emails
+                </div>
+            </div>
+
+            <div class="ioc-box">
+                <div class="ioc-number">
+                    {{ summary["ioc_counts"]["hashes"] }}
+                </div>
+                <div class="ioc-label">
+                    Hashes
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Assessment Findings</h2>
+
+        {% if summary["reasons"] %}
+
+            <ul>
+                {% for reason in summary["reasons"] %}
+                    <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+
+            <p>
+                No suspicious indicators were identified by the current
+                automated assessment.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Report Information</h2>
+
+        <p>
+            <strong>Generated:</strong>
+            {{ summary["generated_at"] }}
+        </p>
+
+        <p>
+            This automated assessment is intended to assist a forensic
+            analyst during initial incident triage. Final conclusions
+            should be based on the complete forensic investigation.
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

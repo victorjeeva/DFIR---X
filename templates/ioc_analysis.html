@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IOC Analysis - DFIR-X</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f7fa;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #a40000;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        ul {
+            line-height: 1.8;
+        }
+
+        .ioc {
+            font-family: monospace;
+            background: #f0f2f5;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        .empty {
+            color: #777;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>IOC Analysis</h1>
+
+        <p>
+            <strong>Evidence ID:</strong>
+            {{ evidence["evidence_id"] }}
+        </p>
+
+        <p>
+            <strong>Case ID:</strong>
+            {{ evidence["case_id"] }}
+        </p>
+
+        <p>
+            <strong>Evidence Name:</strong>
+            {{ evidence["evidence_name"] }}
+        </p>
+
+        <p>
+            This analysis extracts potential Indicators of Compromise
+            (IOCs) from the evidence file. Extracted indicators require
+            further investigation and are not automatically proof of malicious activity.
+        </p>
+
+    </div>
+
+
+    {% if error %}
+
+    <div class="card">
+        <div class="error">
+            {{ error }}
+        </div>
+    </div>
+
+    {% endif %}
+
+
+    {% if result %}
+
+    <div class="card">
+
+        <h2>IP Addresses</h2>
+
+        {% if result["ip_addresses"] %}
+        <ul>
+            {% for ip in result["ip_addresses"] %}
+            <li><span class="ioc">{{ ip }}</span></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No IP addresses detected.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>URLs</h2>
+
+        {% if result["urls"] %}
+        <ul>
+            {% for url in result["urls"] %}
+            <li><span class="ioc">{{ url }}</span></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No URLs detected.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Domains</h2>
+
+        {% if result["domains"] %}
+        <ul>
+            {% for domain in result["domains"] %}
+            <li><span class="ioc">{{ domain }}</span></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No domains detected.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Email Addresses</h2>
+
+        {% if result["email_addresses"] %}
+        <ul>
+            {% for email in result["email_addresses"] %}
+            <li><span class="ioc">{{ email }}</span></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No email addresses detected.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Embedded Hashes</h2>
+
+        {% if result["hashes"] %}
+        <ul>
+            {% for hash in result["hashes"] %}
+            <li><span class="ioc">{{ hash }}</span></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No embedded hashes detected.</p>
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Evidence File Hashes</h2>
+
+        <p>
+            <strong>MD5:</strong><br>
+            <span class="ioc">{{ result["file_hashes"]["md5"] }}</span>
+        </p>
+
+        <p>
+            <strong>SHA-1:</strong><br>
+            <span class="ioc">{{ result["file_hashes"]["sha1"] }}</span>
+        </p>
+
+        <p>
+            <strong>SHA-256:</strong><br>
+            <span class="ioc">{{ result["file_hashes"]["sha256"] }}</span>
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <p>
+        <a href="{{ url_for('evidence_list') }}">← Evidence Management</a>
+        &nbsp; | &nbsp;
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    </p>
+
+</div>
+
+</body>
+</html>

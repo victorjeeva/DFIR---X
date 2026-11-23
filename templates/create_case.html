@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>DFIR-X | Create Case</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 120px;
+        }
+
+        button {
+            background: #111827;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>DFIR-X</h1>
+    <p>Create Investigation Case</p>
+
+</header>
+
+<div class="container">
+
+    <h2>New Investigation Case</h2>
+
+    <form method="POST">
+
+        <label>Case ID</label>
+
+        <input
+            type="text"
+            name="case_id"
+            placeholder="CASE-001"
+            required
+        >
+
+        <label>Case Name</label>
+
+        <input
+            type="text"
+            name="case_name"
+            placeholder="Suspicious Employee Laptop"
+            required
+        >
+
+        <label>Investigator</label>
+
+        <input
+            type="text"
+            name="investigator"
+            placeholder="Investigator Name"
+            required
+        >
+
+        <label>Severity</label>
+
+        <select name="severity">
+
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+
+        </select>
+
+        <label>Description</label>
+
+        <textarea
+            name="description"
+            placeholder="Describe the incident..."
+        ></textarea>
+
+        <button type="submit">
+            Create Case
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="/">← Back to Dashboard</a>
+
+</div>
+
+</body>
+
+</html>

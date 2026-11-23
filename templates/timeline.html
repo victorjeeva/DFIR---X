@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timeline Analysis - DFIR-X</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #1f2937;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        .timeline-event {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-family: monospace;
+            color: #374151;
+        }
+
+        .info {
+            background: #eff6ff;
+            padding: 15px;
+            border-left: 4px solid #2563eb;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 15px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            margin-right: 8px;
+            text-decoration: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>DFIR-X Timeline Analysis</h1>
+
+    <p class="subtitle">
+        Filesystem timeline analysis for digital forensic evidence
+    </p>
+
+    {% if error %}
+
+        <div class="error">
+            <strong>Error:</strong> {{ error }}
+        </div>
+
+    {% else %}
+
+        <div class="info">
+            Timeline timestamps are collected from the filesystem metadata
+            of the evidence file. On Linux, <strong>ctime</strong> represents
+            metadata change time rather than guaranteed original file creation time.
+        </div>
+
+        <div class="card">
+
+            <h2>Evidence Information</h2>
+
+            <table>
+
+                <tr>
+                    <th>Evidence ID</th>
+                    <td>{{ evidence['evidence_id'] }}</td>
+                </tr>
+
+                <tr>
+                    <th>Case ID</th>
+                    <td>{{ evidence['case_id'] }}</td>
+                </tr>
+
+                <tr>
+                    <th>Evidence Name</th>
+                    <td>{{ evidence['evidence_name'] }}</td>
+                </tr>
+
+                <tr>
+                    <th>File Path</th>
+                    <td>{{ evidence['file_path'] }}</td>
+                </tr>
+
+                <tr>
+                    <th>File Size</th>
+                    <td>{{ result['file_size'] }} bytes</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Forensic Timeline</h2>
+
+            <table>
+
+                <tr>
+                    <th>Event</th>
+                    <th>Timestamp</th>
+                    <th>Description</th>
+                </tr>
+
+                <tr>
+                    <td class="timeline-event">
+                        Metadata Change
+                    </td>
+
+                    <td class="timestamp">
+                        {{ result['created'] }}
+                    </td>
+
+                    <td>
+                        Filesystem metadata change time (ctime)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="timeline-event">
+                        Modified
+                    </td>
+
+                    <td class="timestamp">
+                        {{ result['modified'] }}
+                    </td>
+
+                    <td>
+                        Last modification time of the evidence file
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="timeline-event">
+                        Accessed
+                    </td>
+
+                    <td class="timestamp">
+                        {{ result['accessed'] }}
+                    </td>
+
+                    <td>
+                        Last access time recorded by the filesystem
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="card">
+
+        <a class="button" href="/evidence">
+            Evidence Management
+        </a>
+
+        <a class="button" href="/">
+            Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
